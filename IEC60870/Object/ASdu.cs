@@ -7,6 +7,22 @@ using IEC60870.Enum;
 
 namespace IEC60870.Object
 {
+    /// <summary>
+    /// The application service data unit (ASDU).
+    /// </summary>
+    /// <remarks>
+    /// The ASDU is the payload of the application protocol data unit (APDU).
+    /// Its structure is definied in IEC 60870-5-101.
+    /// The ASDU consists of the Data Unit Identifier and a number of Information Objects.
+    /// <list type="bullet">
+    /// <listheader><term>The Data Unit Identifier contains:</term></listheader>
+    /// <item><see cref="TypeId"/>(1 byte)</item>
+    /// <item>Variable Structure Qualifier (1 byte) - specifies how many Information Obbjects and Information Element sets are part of the ASDU</item>
+    /// <item>Cause of Transmission (COT, 1 or 2 bytes) - The first byte codes the actual <see cref="CauseOfTransmission"/>, a bit indicating whether the message was sent for test purposes only and a bit indicating whether a confirmation message is positive or negative. The optional second byte of the Cause of Transmission field is the Originator Address. It is the address of the originating controlling station so that responses can be routed back to it.</item>
+    /// <item>Common Address of ASDU (1 or 2 bytes) - The address of the target station or the broadcast address. If the field length of the common address is 1 byte then the addresses 1 to 254 are used to address a particular station (station address) and 255 is used for broadcast addressing. If the field length of the common address is 2 bytes then the addresses 1 to 65534 are used to address a particular station and 65535 is used for broadcast addressing. Broadcast addressing is only allowed for certain TypeIDs</item>
+    /// <item>A list of <see cref="InformationObject"/> Objects containing the actual data in the form of <see cref="IE.Base.InformationElement"/> Elements</item>
+    /// </list>
+    /// </remarks>
     public class ASdu
     {
         private readonly CauseOfTransmission causeOfTransmission;
@@ -21,6 +37,17 @@ namespace IEC60870.Object
 
         public bool IsSequenceOfElements;
 
+        /// <summary>
+        /// Use this constructor to create standardized ASDUs.
+        /// </summary>
+        /// <param name="typeId">type identification field that defines the purpose and contents of the ASDU</param>
+        /// <param name="isSequenceOfElements">if false then the ASDU contains a sequence of information objects consisting of a fixed number of information elements. If true the ASDU contains a single information object with a sequence of elements.</param>
+        /// <param name="causeOfTransmission">the cause of transmission</param>
+        /// <param name="test">true if the ASDU is sent for test purposes</param>
+        /// <param name="negativeConfirm">true if the ASDU is a negative confirmation</param>
+        /// <param name="originatorAddress">the address of the originating controlling station so that responses can be routed back to it</param>
+        /// <param name="commonAddress">the address of the target station or the broadcast address.</param>
+        /// <param name="informationObjects">the information objects containing the actual data</param>
         public ASdu(TypeId typeId, bool isSequenceOfElements, CauseOfTransmission causeOfTransmission, bool test,
             bool negativeConfirm, int originatorAddress, int commonAddress, InformationObject[] informationObjects)
         {
@@ -41,6 +68,18 @@ namespace IEC60870.Object
                 : informationObjects.Length;
         }
 
+        /// <summary>
+        /// Use this constrcutor to create private ASDU with typeIDs in the range of 128-255.
+        /// </summary>
+        /// <param name="typeId">type identification field that defines the purpose and contents of the ASDU</param>
+        /// <param name="isSequenceOfElements">if false then the ASDU contains a sequence of information objects consisting of a fixed number of information elements. If true the ASDU contains a single information object with a sequence of elements.</param>
+        /// <param name="sequenceLength">the number of information objects or the number elements depending depending on which is transmitted as a sequence</param>
+        /// <param name="causeOfTransmission">the cause of transmission</param>
+        /// <param name="test">true if the ASDU is sent for test purposes</param>
+        /// <param name="negativeConfirm">true if the ASDU is a negative confirmation</param>
+        /// <param name="originatorAddress">the address of the originating controlling station so that responses can be routed back to it</param>
+        /// <param name="commonAddress">the address of the target station or the broadcast address.</param>
+        /// <param name="privateInformation">the bytes to be transmitted as payload</param>
         public ASdu(TypeId typeId, bool isSequenceOfElements, int sequenceLength,
             CauseOfTransmission causeOfTransmission, bool test, bool negativeConfirm, int originatorAddress,
             int commonAddress, byte[] privateInformation)
