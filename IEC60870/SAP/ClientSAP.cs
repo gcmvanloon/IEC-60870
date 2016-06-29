@@ -40,7 +40,7 @@ namespace IEC60870.SAP
             }            
         }
 
-        public void Connect()
+        public Connection Connect()
         {            
             try
             {
@@ -56,7 +56,8 @@ namespace IEC60870.SAP
             catch (Exception e)
             {
                 throw new IOException(e.Message);
-            }            
+            }
+            return _connection;
         }      
 
         public void SetMessageFragmentTimeout(int timeout)
