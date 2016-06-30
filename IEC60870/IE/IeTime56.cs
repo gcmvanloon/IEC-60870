@@ -5,6 +5,37 @@ using IEC60870.IE.Base;
 
 namespace IEC60870.IE
 {
+    /// <summary>
+    /// Information element "Binary Time 2a" = CP56Time2a
+    /// </summary>
+    /// <remarks>
+    /// This binary time is defined in 6.8 of IEC 60870-5-4
+    /// <code>
+    ///         Bits |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |
+    /// Octects      +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |                  Milliseconds                 |
+    ///    1         |  7                                         0  |
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |                  Milliseconds                 |
+    ///    2         | 15                                         8  |  0..59999 ms
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |     |     |            Minutes                |
+    ///    3         |  IV | RES1|  5     4     3     2     1     0  |  0..59 min
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |     |           |          Hours              |
+    ///    4         |  SU |    RES2   |  4     3     2     1     0  |  0..23 h
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |   Day of week   |       Day of month          |  1..31 days of month
+    ///    5         |  2     1     0  |  4     3     2     1     0  |  1..7 days of week
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |                       |       Months          |
+    ///    6         |         RES3          |  3     2     1     0  |  1..12 months
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    ///              |     |               Years                     |
+    ///    7         | RES4|  6     5     4     3     2     1     0  |  0..99 years
+    ///              +-----+-----+-----+-----+-----+-----+-----+-----+
+    /// </code>
+    /// </remarks>
     public class IeTime56 : InformationElement
     {
         private readonly byte[] value = new byte[7];
