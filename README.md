@@ -1,4 +1,4 @@
-# [IEC-60870](https://github.com/minhdtb/IEC-60870/)
+#A fork from [IEC-60870](https://github.com/minhdtb/IEC-60870/)
 
 IEC-60870 is C# version of OpenMUC IEC-60870 library
 
