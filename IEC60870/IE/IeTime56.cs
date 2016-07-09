@@ -59,7 +59,7 @@ namespace IEC60870.IE
                 value[3] |= 0x80;
             }
             value[4] = (byte) (datetime.Day + ((((int) datetime.DayOfWeek + 5)%7 + 1) << 5));
-            value[5] = (byte) (datetime.Month + 1);
+            value[5] = (byte) (datetime.Month);
             value[6] = (byte) (datetime.Year%100);
         }
 
