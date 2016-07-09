@@ -4,22 +4,34 @@ using IEC60870.IE.Base;
 
 namespace IEC60870.IE
 {
+    /// <summary>
+    /// Represents a normalized value (NVA) information element.
+    /// </summary>
     public class IeNormalizedValue : InformationElement
     {
-        protected int Value;
+        public int Value { get; private set; }
 
-        public IeNormalizedValue(int value)
+        /// <summary>
+        /// Normalized value is a value in the range from -1 to (1-1/(2^15))
+        /// </summary>
+        /// <remarks>
+        /// This class represents value as an integer from -32768 to 32767 instead.
+        /// In order to get the real normalized value you need to divide value by 32768.
+        /// </remarks>
+        /// <param name="value">value in the range -32768 to 32767</param>
+        public IeNormalizedValue(short value)
         {
-            if (value < -32768 || value > 32767)
-            {
-                throw new ArgumentException("Value has to be in the range -32768..32767");
-            }
             Value = value;
         }
 
         public IeNormalizedValue(BinaryReader reader)
         {
             Value = reader.ReadByte() | (reader.ReadByte() << 8);
+        }
+
+        public static implicit operator decimal (IeNormalizedValue value)
+        {
+            return (decimal)(value.Value) / 32768;
         }
 
         public override int Encode(byte[] buffer, int i)
@@ -30,14 +42,9 @@ namespace IEC60870.IE
             return 2;
         }
 
-        public int GetValue()
-        {
-            return Value;
-        }
-
         public override string ToString()
         {
-            return "Normalized value: " + (double) Value/32768;
+            return "Normalized value: " + (double)Value / 32768;
         }
     }
 }
