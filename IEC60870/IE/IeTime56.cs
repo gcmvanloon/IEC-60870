@@ -63,6 +63,25 @@ namespace IEC60870.IE
             value[6] = (byte) (datetime.Year%100);
         }
 
+        public IeTime56(DateTime dateTimeInUtc)
+        {
+            if(dateTimeInUtc.Kind != DateTimeKind.Utc)
+            {
+                throw new ArgumentException("DateTime must be represented as UTC", "dateTimeInUtc");
+            }
+
+            var ms = dateTimeInUtc.Millisecond + 1000 * dateTimeInUtc.Second;
+
+            value[0] = (byte)ms;
+            value[1] = (byte)(ms >> 8);
+            value[2] = (byte)dateTimeInUtc.Minute;
+            value[3] = (byte)dateTimeInUtc.Hour;
+            // UTC uses no DayligtSavingTime
+            value[4] = (byte)(dateTimeInUtc.Day + (((int)dateTimeInUtc.DayOfWeek + 1) << 5));
+            value[5] = (byte)(dateTimeInUtc.Month);
+            value[6] = (byte)(dateTimeInUtc.Year % 100);
+        }
+
         public IeTime56(long timestamp) : this(timestamp, TimeZone.CurrentTimeZone, false)
         {
         }
@@ -150,6 +169,16 @@ namespace IEC60870.IE
         public bool IsSummerTime()
         {
             return (value[3] & 0x80) == 0x80;
+        }
+
+        public void SetSummerTime()
+        {
+            value[3] |= 0x80;
+        }
+
+        public void UnsetSummerTime()
+        {
+            value[3] &= 0x7F;
         }
 
         public bool IsInvalid()
