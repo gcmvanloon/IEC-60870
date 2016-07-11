@@ -27,6 +27,7 @@ namespace IEC60870.IE
         public IeNormalizedValue(BinaryReader reader)
         {
             Value = reader.ReadByte() | (reader.ReadByte() << 8);
+            Value -= 32768;
         }
 
         public static implicit operator decimal (IeNormalizedValue value)
@@ -36,8 +37,9 @@ namespace IEC60870.IE
 
         public override int Encode(byte[] buffer, int i)
         {
-            buffer[i++] = (byte) Value;
-            buffer[i] = (byte) (Value >> 8);
+            var temp = Value + 32768;
+            buffer[i++] = (byte) temp;
+            buffer[i] = (byte) (temp >> 8);
 
             return 2;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,36 @@ namespace IEC60870.UnitTest.IE
         {
             var sut = new IeNormalizedValue(value);
             Assert.Equal((decimal)expected, sut, 2);
+        }
+
+        [Fact]
+        public void All_16_bits_on_represents_1()
+        {
+            var stream = new MemoryStream(new Byte[] { 0xFF, 0xFF });
+            var reader = new BinaryReader(stream);
+            var sut = new IeNormalizedValue(reader);
+
+            Assert.Equal(1.0m, sut, 2);
+        }
+
+        [Fact]
+        public void All_16_bits_off_represents_minus_1()
+        {
+            var stream = new MemoryStream(new Byte[] { 0x00, 0x00 });
+            var reader = new BinaryReader(stream);
+            var sut = new IeNormalizedValue(reader);
+
+            Assert.Equal(-1.0m, sut, 2);
+        }
+
+        [Fact]
+        public void Decode()
+        {
+            var buffer = new byte[2];
+            var sut = new IeNormalizedValue(short.MaxValue);
+            sut.Encode(buffer, 0);
+
+            Assert.Equal(new byte[] { 0xFF, 0xFF }, buffer);
         }
     }
 }
