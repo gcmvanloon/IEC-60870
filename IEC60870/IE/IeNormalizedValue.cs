@@ -9,7 +9,7 @@ namespace IEC60870.IE
     /// </summary>
     public class IeNormalizedValue : InformationElement
     {
-        public int Value { get; private set; }
+        private int Value;
 
         /// <summary>
         /// Normalized value is a value in the range from -1 to (1-1/(2^15))
@@ -42,6 +42,11 @@ namespace IEC60870.IE
             buffer[i] = (byte) (temp >> 8);
 
             return 2;
+        }
+
+        public int GetValue()
+        {
+            return Value;
         }
 
         public override string ToString()
